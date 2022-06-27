@@ -9,10 +9,9 @@
 				<div class="row">
 					<div class="col-md-12">
 						<ul class="breadcrumb-tree">
-							<li><a href="#">Home</a></li>
-							<li><a href="#">All Categories</a></li>
-							<li><a href="#">Accessories</a></li>
-							<li class="active">Headphones (227,490 Results)</li>
+							<li><a href="{{ url('/') }}">Home</a></li>
+							<li><a href="">All Categories</a></li>
+							<li class="active"></li>
 						</ul>
 					</div>
 				</div>
@@ -35,59 +34,21 @@
 							<h3 class="aside-title">Categories</h3>
 							<div class="checkbox-filter">
 
+
+                  
+   @foreach (\App\Models\Categories::select('cat_name')->get() as $category)
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-1">
+									<input type="checkbox" id="category-1" value="{{ $category->cat_name }}">
 									<label for="category-1">
 										<span></span>
-										Laptops
-										<small>(120)</small>
+										{{ $category['cat_name'] }}
+										
 									</label>
 								</div>
 
-								<div class="input-checkbox">
-									<input type="checkbox" id="category-2">
-									<label for="category-2">
-										<span></span>
-										Smartphones
-										<small>(740)</small>
-									</label>
-								</div>
-
-								<div class="input-checkbox">
-									<input type="checkbox" id="category-3">
-									<label for="category-3">
-										<span></span>
-										Cameras
-										<small>(1450)</small>
-									</label>
-								</div>
-
-								<div class="input-checkbox">
-									<input type="checkbox" id="category-4">
-									<label for="category-4">
-										<span></span>
-										Accessories
-										<small>(578)</small>
-									</label>
-								</div>
-
-								<div class="input-checkbox">
-									<input type="checkbox" id="category-5">
-									<label for="category-5">
-										<span></span>
-										Laptops
-										<small>(120)</small>
-									</label>
-								</div>
-
-								<div class="input-checkbox">
-									<input type="checkbox" id="category-6">
-									<label for="category-6">
-										<span></span>
-										Smartphones
-										<small>(740)</small>
-									</label>
-								</div>
+								
+  @endforeach
+								
 							</div>
 						</div>
 						<!-- /aside Widget -->
@@ -121,7 +82,7 @@
 									<label for="brand-1">
 										<span></span>
 										SAMSUNG
-										<small>(578)</small>
+										<small></small>
 									</label>
 								</div>
 								<div class="input-checkbox">
@@ -129,7 +90,7 @@
 									<label for="brand-2">
 										<span></span>
 										LG
-										<small>(125)</small>
+										<small></small>
 									</label>
 								</div>
 								<div class="input-checkbox">
@@ -137,7 +98,7 @@
 									<label for="brand-3">
 										<span></span>
 										SONY
-										<small>(755)</small>
+										<small></small>
 									</label>
 								</div>
 								<div class="input-checkbox">
@@ -145,7 +106,7 @@
 									<label for="brand-4">
 										<span></span>
 										SAMSUNG
-										<small>(578)</small>
+										<small></small>
 									</label>
 								</div>
 								<div class="input-checkbox">
@@ -153,7 +114,7 @@
 									<label for="brand-5">
 										<span></span>
 										LG
-										<small>(125)</small>
+										<small></small>
 									</label>
 								</div>
 								<div class="input-checkbox">
@@ -161,7 +122,7 @@
 									<label for="brand-6">
 										<span></span>
 										SONY
-										<small>(755)</small>
+										<small></small>
 									</label>
 								</div>
 							</div>
@@ -177,7 +138,7 @@
 					<!-- STORE -->
 					<div id="store" class="col-md-9">
 						<!-- store top filter -->
-						<div class="store-filter clearfix">
+						<!-- <div class="store-filter clearfix">
 							<div class="store-sort">
 								<label>
 									Sort By:
@@ -199,7 +160,7 @@
 								<li class="active"><i class="fa fa-th"></i></li>
 								<li><a href="#"><i class="fa fa-th-list"></i></a></li>
 							</ul>
-						</div>
+						</div> -->
 						<!-- /store top filter -->
 
 						<!-- store products -->
@@ -213,23 +174,17 @@
 							 
 								<div class="col-md-4 col-xs-6">
 								<div class="product">
-									<div class="product-img">
-										 <img src="{{ $product->image }}" alt="" data-toggle="modal" data-target="#product_view{{ $product->id }}" class="cursor">
+									<div class="product-img text-center">
+										 <img src="{{ $product->image }}" alt="" data-toggle="modal" data-target="#product_view{{ $product->id }}" class="cursor text-center">
 										<!--product 30% sales label here-->
 									</div>
 									<div class="product-body">
-										<p class="product-category">{{ $product->cat_name }}</p>
-										<h3 class="product-name"><a href="#">{{ $product->prod_name }}</a></h3>
-										<h4 class="product-price">{{ $product->price }} <del class="product-old-price">{{ $product->price }}</del></h4>
-										<div class="product-rating">
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
+										<p class="product-category">{{ $product->prod_brand }}</p>
+										<h6 class="product-name"><a href="#">{{ $product->prod_name }}</a></h6>
+										<h4 class="product-price">₦{{ number_format($product->price )}} <del class="product-old-price">₦{{number_format($product->old_price)  }}</del></h4>
+										
 										<div class="product-btns">
-											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+										
 										
 											<button class="quick-view" data-toggle="modal" data-target="#product_view{{ $product->id }}"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
 										</div>
@@ -263,7 +218,7 @@
                                                 <h4>{{ $product->prod_name }}</h4>
                                                
                                                 <p>{{ $product->description }}</p>
-                                                <h4 class="product-price">₦{{ $product->price }}  <small><del class="product-old-price"> ₦{{ $product->price }}</del></small></h4>
+                                                <h4 class="product-price">₦{{ number_format($product->price )}}  <small><del class="product-old-price">₦{{number_format($product->old_price)  }}</del></small></h4>
                                           
                                           <div class="row">
                                                    <!-- end col -->

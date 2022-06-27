@@ -12,6 +12,10 @@ use App\Models\OrderItem;
 use App\Models\ShippingDetail;
 use App\Models\Transaction;
 use App\Models\Product;
+use App\Models\About;
+use App\Models\Privacy;
+use App\Models\ReturnRefund;
+use App\Models\Terms;
 
 
 use Auth;
@@ -42,16 +46,13 @@ class SuperAdminController extends Controller
 
                         // count orders 
          $count_orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-                        ->leftjoin('order_items', 'order_items.order_id', '=', 'orders.id')
-                          ->orwhere('order_items.status', 'confirmed')
-                         ->orwhere('order_items.status', 'paid');
+                          ->where('orders.status', 'confirmed');
                       
                          //select all orders from members
-         $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-                          ->leftjoin('order_items', 'order_items.order_id', '=', 'orders.id')
-                         ->where('order_items.status', 'confirmed')
-                         ->orwhere('order_items.status', 'paid')
-                        ->orderBy('order_id', 'desc')
+          $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+                        ->where('orders.status', 'confirmed')
+                         ->orwhere('orders.status', 'paid')
+                        ->orderBy('date', 'desc')
                          ->paginate( $request->get('per_page', 5));                   
                        //->get(['orders.*', 'users.*', 'order_items.*']);
 
@@ -60,19 +61,25 @@ class SuperAdminController extends Controller
         //                ->get('credit');
 
         // sum total order paid for by cooperative for his from members
-        $sales = Transaction::join('users', 'users.id', '=', 'transactions.user_id')
+        $transaction = Transaction::join('users', 'users.id', '=', 'transactions.user_id')
                        ->get('tran_amount');
+
+      $sales = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+                           ->leftjoin('users', 'users.id', '=', 'products.seller_id') 
+                           ->leftjoin('orders', 'orders.user_id', '=', 'users.id')  
+                          ->where('orders.status', 'Paid')
+                          ->paginate( $request->get('per_page', 5));  
 
         $products = Product::all();
 
-        return view('company.admin', compact('cooperatives', 'sellers', 'members', 'count_orders', 'orders', 'sales', 'products', 'users'));
+        return view('company.admin', compact('cooperatives', 'sellers', 'members', 'count_orders', 'orders', 'sales', 'products', 'users', 'transaction'));
     }
     else { return Redirect::to('/login');}
    
     }
  
 
-    public function sales_invoice(Request $request, $order_id )
+    public function sales_invoice(Request $request, $order_number )
     {
      if( Auth::user()->role_name  == 'superadmin'){
     
@@ -82,7 +89,7 @@ class SuperAdminController extends Controller
                              ->join('products', 'products.id', '=', 'order_items.product_id')
                               ->join('vouchers', 'vouchers.user_id', '=', 'users.id')
         
-                        ->where('order_id', $order_id)
+                        ->where('order_number', $order_number)
                         ->get(['vouchers.*', 'orders.*', 'users.*', 'order_items.*', 'shipping_details.*', 'products.*'])->first();
 
          $orders = Order::join('users', 'users.id', '=', 'orders.user_id')// count orders from members
@@ -92,7 +99,7 @@ class SuperAdminController extends Controller
                               ->join('vouchers', 'vouchers.user_id', '=', 'users.id')
                          // ->where('order_items.status', 'confirmed')
                          // ->orwhere('order_items.status', 'paid')
-                        ->where('order_id', $order_id)
+                        ->where('order_number', $order_number)
                         ->get(['orders.*', 'users.*', 'order_items.*', 'shipping_details.*', 'products.*', 'vouchers.*']);
 
     return view('invoice', compact('item', 'orders'));
@@ -103,6 +110,29 @@ class SuperAdminController extends Controller
         }             
     }
 
+
+
+
+ public function order_details(Request $request, $order_number )
+    {
+     if( Auth::user()->role_name  == 'superadmin'){
+    
+         $orders = Product::join('users', 'users.id', '=', 'products.seller_id')
+                          ->join('order_items', 'order_items.product_id', '=', 'products.id')
+                          ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                          ->where('orders.status', 'paid')
+                        ->orwhere('orders.order_number', $order_number)
+                         ->orderBy('date', 'desc')
+                        // ->get(['orders.*', 'users.*', 'order_items.*', 'products.*']);
+                          ->paginate( $request->get('per_page', 5)); 
+
+    return view('company.order_details', compact('orders'));
+           }
+
+    else { return Redirect::to('/login');
+    
+        }             
+    }
   
    public function products_list(Request $request){
   
@@ -128,19 +158,24 @@ class SuperAdminController extends Controller
     }
 
 
-
+//offline payment
     public function mark_paid(Request $request)
     {
 
         if(null !== $_POST['submit'])
         {
-            $order_id  = $request->input('order_id');
+            $order_number  = $request->input('order_number');
              //$input  = $request->input('p');
 
              //mark order as paid
-            \DB::table('order_items')
-                ->where('order_id', $order_id)
-                ->update(['status' => 'Paid']);
+            \DB::table('orders')
+                ->where('order_number', $order_number)
+                ->update([
+                    'status' => 'Paid',
+                    'pay_status'=>'success',
+                    'pay_type'=>'Offline'
+
+                ]);
 
             Session::flash('pay', ' You have marked this orders as  "Paid !".'); 
             Session::flash('alert-class', 'alert-success'); 
@@ -218,16 +253,151 @@ class SuperAdminController extends Controller
                         ->paginate( $request->get('per_page', 5));
                        //->get(['vouchers.*', 'users.*']);
         // }
-       
-
-
        return view('company.transactions', compact('transactions'));
 
        }
 
-    else { return Redirect::to('/login');}
+    else { return Redirect::to('/login');
+    }
    
     }
 
+
+ public function about(Request $request){
+  
+      if( Auth::user()->role_name  == 'superadmin'){
+        $about = About::all();
+        return view('company.add_about', compact('about'));
+      }
+
+    else { return Redirect::to('/login');
+    }
+  }
+
+  //edit 
+ public function about_edit(Request $request, $id){
+        if( Auth::user()->role  == '1'){
+            $about = About::find($id);
+            return view('company.about_edit', compact('about')); 
+         }
+          else { return Redirect::to('/login');
+    }
+    }
+
+    //update 
+public function about_update(Request $request, $id)
+    {
+        $about = About::find($id);
+        $about->about = $request->input('about');
+        $about->our_story = $request->input('our_story');
+        $about->update();
+        return redirect()->back()->with('status','About page updated');
+    }
+
+public function privacy(Request $request){
+  
+      if( Auth::user()->role_name  == 'superadmin'){
+        $about = Privacy::all();
+        return view('company.add_privacy_policy', compact('about'));
+      }
+
+    else { return Redirect::to('/login');
+    }
+  }
+
+  //edit 
+ public function privacy_edit(Request $request, $id){
+        if( Auth::user()->role  == '1'){
+            $about = Privacy::find($id);
+            return view('company.privacy_edit', compact('about')); 
+         }
+          else { return Redirect::to('/login');
+    }
+    }
+
+    //update 
+    public function privacy_update(Request $request, $id)
+    {
+        $about = Privacy::find($id);
+        $about->privacy_policy = $request->input('privacy');
+        $about->update();
+        return redirect()->back()->with('status','Privacy page updated');
+    }
+
+
+    public function refund(Request $request){
+  
+      if( Auth::user()->role_name  == 'superadmin'){
+        $about = ReturnRefund::all();
+        return view('company.add_refund_and_return_policy', compact('about'));
+      }
+
+    else { return Redirect::to('/login');
+    }
+  }
+
+  //edit 
+ public function refund_edit(Request $request, $id){
+        if( Auth::user()->role  == '1'){
+            $about = ReturnRefund::find($id);
+            return view('company.refund_edit', compact('about')); 
+         }
+          else { return Redirect::to('/login');
+    }
+    }
+
+    //update 
+    public function refund_update(Request $request, $id)
+    {
+        $about = ReturnRefund::find($id);
+        $about->return_policy = $request->input('return');
+        $about->update();
+        return redirect()->back()->with('status','Reurn & Refund page updated');
+    }
+
+
+public function tandc(Request $request){
+  
+      if( Auth::user()->role_name  == 'superadmin'){
+        $about = Terms::all();
+        return view('company.add_terms_and_condition', compact('about'));
+      }
+
+    else { return Redirect::to('/login');
+    }
+  }
+
+  //edit 
+ public function tandc_edit(Request $request, $id){
+        if( Auth::user()->role  == '1'){
+            $about = Terms::find($id);
+            return view('company.terms_edit', compact('about')); 
+         }
+          else { return Redirect::to('/login');
+    }
+    }
+
+    //update 
+    public function tandc_update(Request $request, $id)
+    {
+        $about = Terms::find($id);
+        $about->terms_c = $request->input('terms_c');
+        $about->update();
+        return redirect()->back()->with('status','T & C page updated');
+    }
+
+
+     public function removed_product(Request $request){
+  
+      if( Auth::user()->role_name  == 'superadmin'){
+        $products = User::join('products', 'products.seller_id', '=', 'users.id')
+                         ->where('products.prod_status', 'remove')
+                        ->paginate( $request->get('per_page', 4));
+        return view('company.removed_product', compact('products'));
+      }
+
+    else { return Redirect::to('/login');
+    }
+  }
 
 }//class

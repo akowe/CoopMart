@@ -113,7 +113,7 @@
               <img src="{{ asset ('admin/img/userav.png')}}" class="d-inline-block align-top" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>
               <div class="dropdown-divider"></div>
             
                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"
@@ -218,7 +218,7 @@
               <img src="{{ asset ('admin/img/userav.png')}}" class="d-inline-block align-top" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>
               <div class="dropdown-divider"></div>
             
                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"
@@ -325,7 +325,7 @@
               <img src="{{ asset ('admin/img/userav.png')}}" class="d-inline-block align-top" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>
               <div class="dropdown-divider"></div>
             
                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"
@@ -429,7 +429,7 @@
               <img src="{{ asset ('admin/img/userav.png')}}" class="d-inline-block align-top" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">My Profile</a>
+              <a class="dropdown-item" href="{{ url('profile') }}">My Profile</a>
               <div class="dropdown-divider"></div>
             
                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"

@@ -16,14 +16,14 @@
             <!-- container -->
             <nav aria-label="breadcrumb" role="navigation">
               <ol class="breadcrumb adminx-page-breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Seller</li>
               </ol>
             </nav>
 
             <div class="pb-3">
             
-              <p class="text-danger">"Note that CoopMart percentage and coperative percentage would be added to each product on our landing page. <br>We assume your prices are wholesale and reasonable." Image format: <span class="text-dark">.jpg, .png, .jpeg.</span> Max size: <span class="text-dark">300kb.</span> <!-- Max-dimension: <span class="text-dark">600 x 600</span> -->
+              <p class="text-danger">"Note that CoopMart percentage would be added to each product on our landing page. <br>We assume your prices are wholesale and reasonable." Image format: <span class="text-dark">.jpg, .png, .jpeg.</span> Max size: <span class="text-dark">300kb.</span> <!-- Max-dimension: <span class="text-dark">600 x 600</span> -->
               </p>
               <p> <h6>All field mark <i class="text-danger">*</i> are required</h6></p>
               <p>  @if (session('status'))
@@ -49,9 +49,10 @@
 
                    <h4>Upload New Product</h4>
                       <form enctype="multipart/form-data" action="{{ url('upload-image') }}" method="POST">
+                        @csrf
                         <div class="row">
                           <div class="col-lg-3 ">
-                        @csrf
+                       
                         <div class="form-group">
                           <label>Product name <i class="text-danger">*</i></label>
                           <input type="text" name="prod_name" class="form-control">

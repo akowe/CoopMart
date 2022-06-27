@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Arr;
 use App\Models\User;
 use App\Mail\LowStockEmail;
+use App\Models\About;
+use App\Models\Privacy;
+use App\Models\ReturnRefund;
+use App\Models\Terms;
 
 use Session;
 use Validator;
@@ -35,7 +39,7 @@ class ProductController extends Controller
 
         $products = Product::where('prod_status', 'approve')
                     ->orderBy('created_at', 'desc')
-                    ->paginate($request->get('per_page', 4));
+                    ->paginate($request->get('per_page', 16));
 
         $seller = Arr::pluck($products, 'seller_id');
         $get_seller_id = implode(" ",$seller);
@@ -169,14 +173,21 @@ class ProductController extends Controller
             $totalAmount += $item['price'] * $item['quantity'];
 
             // check if sufficient credit limit
-             $getcredit = \DB::table('vouchers')->where('user_id', $id)->first()->credit;
+             //$getcredit = \DB::table('vouchers')->where('user_id', $id)->first()->credit;
 
-           if($getcredit < $totalAmount){
 
-            Session::flash('credit', ' You Have Insufficient Credit Limit. Contact Your Cooperative!'); 
-            Session::flash('alert-class', 'alert-danger'); 
+    //$getcredit = \DB::table('vouchers')->where('user_id', $id)->get('credit')->first();
 
-           }
+           //   $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
+           //          ->where('vouchers.user_id', $id)
+           //          ->get(['vouchers.credit'])->first(); 
+
+           // if($credit < $totalAmount){
+
+           //  Session::flash('credit', ' Your balance is low. Reduce your  items or contact your cooperative admin!'); 
+           //  Session::flash('alert-class', 'alert-danger'); 
+
+           // }
 
             }//foreach
 
@@ -224,6 +235,26 @@ public function preview(Request $request, $prod_name)
      return view('preview', compact('products'));
 }
 
+
+ public function about_us(Request $request){
+        $about = About::all();
+        return view('about', compact('about'));
+  }
+
+public function privacy_policy(Request $request){
+        $about = Privacy::all();
+        return view('privacy_policy', compact('about'));
+  }
+
+public function return_policy(Request $request){
+        $about = ReturnRefund::all();
+        return view('refund_and_return_policy', compact('about'));
+  }
+
+  public function terms(Request $request){
+        $about = Terms::all();
+        return view('terms_and_condition', compact('about'));
+  }
 
  
 }//class

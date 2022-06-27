@@ -3,8 +3,13 @@
     <head>
         <meta charset="utf-8">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+         <meta name="keywords" content="
+        Cooperatives, Cooperatives in Nigeria, Blender, phones, smart phones, tv, television, Phones, Computer, Accessories, Electronics, Foodstuffs, Furniture, Home Appliances, Kitchen, Automobile, Groceries, Fashion, online store, ecommerce website, shopping cart, ecommerce, cooperatives ecommerce,
+        cooperatives eccomerce in Nigeria, Buy, Sell, cooperative ecommerce platform in Nigeria" />
 
         <title>CoopMart</title>
+        <link rel="icon" type="image/x-icon" href="./images/logo-1.png">
+      
 
         <!-- dataTable css -->
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
@@ -17,6 +22,8 @@
 
         <!-- Bootstrap -->
         <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+
+
 
         <!-- Slick -->
         <link type="text/css" rel="stylesheet" href="css/slick.css"/>
@@ -33,7 +40,63 @@
            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
                
-<style>
+  <style>
+  .hide-show{
+  width: 94%;
+ /* margin: -3.62em 3% 0 1.5%;*/
+  position: relative;
+  z-index: 5;
+  display: none;
+}
+
+ .hide-hide{
+  width: 94%;
+ /* margin: -3.62em 3% 0 1.5%;*/
+  position: relative;
+  z-index: 5;
+  display: none;
+}
+
+ .input-icons i {
+            position: absolute;
+        }
+
+    .input-icons span  {
+            position: absolute;
+        }
+         
+        .input-icons {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+         
+        .icon {
+            padding: 15px;
+            min-width: 40px;
+
+        }
+
+         .icon-password {
+            padding-top: 15px;
+            padding-bottom: 10px;
+            min-width: 40px;
+            float: right;
+            margin-left: -30px;
+            cursor: pointer;
+        }
+         
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: solid 1px #ccc;
+            border-radius: 5px;
+            text-align: center;
+            
+        }
+
+.dropdown-backdrop{
+    position: static;
+    }
  /* Top right text */
 .top-right {
   position: absolute;
@@ -91,25 +154,28 @@ font-size: 14px;
 /*
 .dropdown:hover .dropbtn {background-color: #3e8e41;}*/
 </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4376FNT1XB"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
+          gtag('config', 'G-4376FNT1XB');
+        </script>
 
-         </head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-232659603-1">
+        </script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-232659603-1');
+        </script>
+</head>
     <body class="antialiased">
-        <!-- <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-            @if (Route::has('login'))
-                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-                    @auth
-                        <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-</div> -->
 
 <!-- HEADER -->
         <header>
@@ -117,12 +183,12 @@ font-size: 14px;
             <div id="top-header">
                 <div class="container">
                     <ul class="header-links pull-left">
-                        <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                        <li><a href="#"><i class="fa fa-envelope-o"></i> support@coopmart.ng</a></li>
+                        <li><a href="#"><i class="fa fa-phone"></i> +234 (0) 906 496 5041</a></li>
+                        <li><a href="mailto:info@coopmart.ng"><i class="fa fa-envelope-o"></i>info@coopmart.ng</a></li>
                         
                     </ul>
                     <ul class="header-links pull-right">
-                        <li><a href="" data-toggle="modal" data-target="#coopModal"><i class="fa fa-users"></i>  Cooperative</a></li>
+                      <!--   <li><a href="" data-toggle="modal" data-target="#coopModal"><i class="fa fa-users"></i>  Cooperative</a></li> -->
                         <li><a href="" data-toggle="modal" data-target="#merchantModal"><i class="fa fa-user-o"></i> Sell on CoopMart</a></li>
                         <li>
                             <!--show member name-->
@@ -130,10 +196,10 @@ font-size: 14px;
                          @auth
                         <li class="nav-item dropdown">
                             
-                             <a href="" class="dropbtn"> {{ Auth::user()->fname }}</a>
+                             <a href="" class="dropbtn"> My Account</a>
                               @if(Auth::user()->role_name == 'cooperative')
                               <div class="dropdown-content">
-                                <a href="{{ route('cooperative') }}">My Account</a>
+                                <a href="{{ route('cooperative') }}">Dashboard</a>
                               
                                   <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
@@ -149,7 +215,7 @@ font-size: 14px;
 
                                  @if(Auth::user()->role_name == 'merchant')
                               <div class="dropdown-content">
-                                <a href="{{ route('merchant') }}">My Account</a>
+                                <a href="{{ route('merchant') }}">Dashboard</a>
                                  <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -165,7 +231,7 @@ font-size: 14px;
 
                                   @if(Auth::user()->role_name == 'member')
                               <div class="dropdown-content">
-                                <a href="{{ route('dashboard') }}">My Account</a>
+                                <a href="{{ route('dashboard') }}">Dashboard</a>
                                  <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -180,7 +246,7 @@ font-size: 14px;
 
                                 @if(Auth::user()->role_name == 'superadmin')
                               <div class="dropdown-content">
-                                <a href="{{ route('superadmin') }}">My Account</a>
+                                <a href="{{ route('superadmin') }}">Dashboard</a>
                                  <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -192,13 +258,13 @@ font-size: 14px;
                                 </div>
                                 @endif
                                
-                                </li>
+                               @else
+                                  <a href="" data-toggle="modal" data-target="#loginModal" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in / Register</a>
+                              </li>
+                              @endauth
+                            @endif
                                 <!-- end show member name-->
 
-                                 @else
-                                  <a href="" data-toggle="modal" data-target="#loginModal" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a></li>
-                            @endif
-                            @endauth
                            
                     </ul>
                 </div>
@@ -215,8 +281,8 @@ font-size: 14px;
                         <div class="col-md-3">
                             <div class="header-logo">
                                 <a href="{{ url('/') }}" class="logo">
-                                    <!-- <img src="./img/logo.png" alt=""> -->
-                                    <h1 class="white" style="color:#fff;">CoopMart</h1>
+                                    <img src="./images/logo-1.png" alt="" width="169" height="70" alt="Coopmart" title="CoopMart">
+                                   <!--  <h1 class="white" style="color:#fff;">CoopMart</h1> -->
                                 </a>
                             </div>
                         </div>
@@ -248,7 +314,7 @@ font-size: 14px;
                         <!-- ACCOUNT -->
                         <div class="col-md-2">
                             <div class="header-ctn">
-                             
+                           
                                 <!-- Cart -->
                                 <div class="dropdown">
                                     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style="cursor: pointer;">
@@ -334,7 +400,7 @@ font-size: 14px;
                 <!-- responsive-nav -->
                 <div id="responsive-nav">
                     <!-- NAV -->
-                    <ul class="main-nav nav navbar-nav" style="font-size:13px;" >
+                    <ul class="main-nav nav navbar-nav" style="font-size:14px;" >
                     <li class="active"><a href="{{ url('/')}}">Home</a></li>
                           @foreach (\App\Models\Categories::select('cat_name')->limit(8)->get() as 
                           $id => $category)
@@ -374,6 +440,10 @@ font-size: 14px;
 $('#search').on('keyup',function(){
 $value=$(this).val();
 $.ajax({
+    headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            "X-Requested-With": "XMLHttpRequest"
+            }
 type : 'get',
 url : '{{URL::to('category')}}',
 data:{'search':$value},

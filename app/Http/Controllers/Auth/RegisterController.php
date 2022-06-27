@@ -12,6 +12,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 use App\Models\Voucher;
+use Session;
 
 
  
@@ -97,6 +98,8 @@ class RegisterController extends Controller
             $voucher->credit = '0';
             $voucher->save();
            
+            Session::flash('status', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
+            Session::flash('alert-class', 'alert-success'); 
           return $user;
         
          

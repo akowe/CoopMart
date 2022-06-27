@@ -193,7 +193,7 @@
 
 										<!--hide button alert-->
 										<div class="form-group" style="display: none;">
-												<span>Any order that is confirmed, cancellation fee is ₦200. An order can only be cancelled within 24hours.</span>
+												<span>Any order that is confirmed, cancellation fee is ₦200. </span>
 
 												<br><br>
 												<input type="checkbox" id="terms" required>
@@ -218,7 +218,7 @@
 
 											<!--show button alert-->
 											<div class="form-group" style="display: block;">
-												<span>Any order that is confirmed, cancellation fee is ₦200. An order can only be cancelled within 24hours.</span>
+												<span>Any order that is confirmed, cancellation fee is ₦200.</span>
 
 												<br><br>
 												<input type="checkbox" id="terms" required>

@@ -39,7 +39,7 @@ class VoucherController extends Controller
 
              //increase member credit limit
             \DB::table('vouchers')->where('user_id', $user_id)->increment('credit',$input);
-            Session::flash('credit', ' Credit Added!'); 
+            Session::flash('credit', ' Credit!'); 
             Session::flash('alert-class', 'alert-success'); 
            }
 

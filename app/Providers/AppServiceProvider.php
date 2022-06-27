@@ -18,12 +18,12 @@ class AppServiceProvider extends ServiceProvider
     }
 
 // for cpanel purpose
-// public function register()
-// {
-//     $this->app->bind('path.public', function() {
-//         return base_path('../public_html');
-//     });
-// }
+    // public function register()
+    // {
+    // $this->app->bind('path.public', function() {
+    //     return base_path('../public_html');
+    // });
+    // }
     /**
      * Bootstrap any application services.
      *

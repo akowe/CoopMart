@@ -78,12 +78,13 @@
                             <div class="col-md-6">
                                 <input id="coopcope" type="text" class="form-control @error('name') is-invalid @enderror" name="code" value="" required autocomplete="coopcode" autofocus>
                                 <span class="small text-danger">get it from your cooperative admin</span>
-
+                                <br>
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <br>
 
                                 <input type="hidden"  name="role" value="4">
                                  <input type="hidden"  name="role_name" value="member">
@@ -96,12 +97,13 @@
 
                             <div class="col-md-6">
                                 <input id="fname" type="text" class="form-control @error('name') is-invalid @enderror" name="fname" value="" required autocomplete="name" autofocus>
-
+                                <br>
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <br>
                             </div>
                         </div>
 
@@ -110,12 +112,13 @@
 
                             <div class="col-md-6">
                                 <input id="lname" type="text" class="form-control @error('name') is-invalid @enderror" name="lname" value="" required autocomplete="name" autofocus>
-
+                                <br>
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <br>
                             </div>
                         </div>
 
@@ -124,12 +127,13 @@
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
+                                <br>
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <br>
                             </div>
                         </div>
 
@@ -139,12 +143,13 @@
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
                                 <span class="small text-danger">password minimum leght: 6</span>
-
+                                <br>
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <br>
                             </div>
                         </div>
 

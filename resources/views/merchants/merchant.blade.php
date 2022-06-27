@@ -15,7 +15,7 @@
             <!-- BreadCrumb -->
             <nav aria-label="breadcrumb" role="navigation">
               <ol class="breadcrumb adminx-page-breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{url('/') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Seller</li>
               </ol>
             </nav>
@@ -26,9 +26,14 @@
               <h5 class="navbar bg-dark text-white" style="padding-left: 10px;" >
                
                 </h5> -->
-               
+                 <div class="card-body text-center">
 
-                <div class="card-body">
+                   @if (session('profile'))
+                        <div class="alert alert-danger" role="alert">
+                             <a href="{{url('profile') }}" class="cursor"> {!! session('profile') !!}</a>
+                        </div>
+                    @endif
+                    
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -42,7 +47,7 @@
                   <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between mb-3">
                       <h5 class="card-title mb-0 small">
-                       Total Products
+                       Total Approved Products
                       </h5>
 
                       <div class="card-title-sub">
@@ -57,9 +62,68 @@
                 </div>
               </div>
 
+
+
+              <div class="col-md-6 col-lg-3 d-flex">
+                <div class="card mb-grid w-100">
+                  <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between mb-3">
+                      <h5 class="card-title mb-0 small">
+                       Total Sales
+                      </h5>
+
+                      <div class="card-title-sub">
+                         {{ $count_orders->count() }}
+                      </div>
+                    </div>
+
+                    <div class="progress mt-auto">
+                      <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+                  <div class="col-md-6 col-lg-6 d-flex">
+                <div class="card border-0 bg-primary text-white text-center mb-grid w-100">
+                  <div class="d-flex flex-row align-items-center h-100">
+                    <div class="card-icon d-flex align-items-center h-100 justify-content-center">
+                      <i data-feather="shopping-cart"></i>
+                    </div>
+                    <a href="{{url('sales_preview') }}" class="card-body text-white" title="Click to view sales">
+                      <div class="card-info-title">Sales</div>
+                      <h3 class="card-title mb-0">
+
+                       @php
+                         $company_percentage = 0
+                         @endphp
+
+                            @php
+                        $company_percentage +=  $sales->sum('seller_price') * 7/ 100;
+                         @endphp
+
+                        @php
+                        $total_sales = 0
+                           @endphp
+
+                        
+                        @php
+                        $total_sales += $sales->sum('seller_price') - $company_percentage;
+                        @endphp
+
+
+
+                       ₦{{ number_format($sales->sum('seller_price')) }}
+
+                      </h3>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
             
            
-            </div>
+            </div><!--row-->
 
   @if(Session::has('remove')== true)
                                         <!--show alert-->
@@ -76,7 +140,7 @@
               <div class="col-lg-8">
                 <div class="card">
                   <div class="card-header d-flex justify-content-between align-items-center">
-                    <div class="card-header-title">Payment</div>
+                    <div class="card-header-title">Products</div>
 
                     <nav class="card-header-actions">
                       <a class="card-header-action" data-toggle="collapse" href="#card1" aria-expanded="false" aria-controls="card1">
@@ -102,14 +166,14 @@
                   </div>
                   <div class="card-body collapse show tabel-resposive" id="card">
                     <h4 class="card-title">All products</h4>
-                    <p class="card-text">Note that CoopMart percentage and coperative percentage would be added to each product on our landing page.</p>
+                    <p class="card-text text-danger">Note that CoopMart percentage would be added to the price of each product on our landing page.</p>
                     
                     <table class="table-striped table">
                         <thead>
                           <tr class="small">
                             <th>Date</th>
                             <th>Product</th>
-                            <th>Quantity</th>
+                            <th>Qty.</th>
                             <th>Old Price</th>
                              <th>New Price</th>
                              <th>Status</th>
@@ -120,33 +184,48 @@
                         </thead>
                         <tbody>
                           @foreach($products as $product)
+                           
+
                           <tr class="small">
                             <td> {{ date('d/m/y', strtotime($product->created_at))}}</td>
                              <td>{{$product->prod_name }}</td>
                              <td>{{$product->quantity }}</td>
-                             <td>{{$product->old_price }}</td>
-                             <td>{{$product->price }}</td>
+                             <td>{{number_format($product->old_price )}}</td>
+                             <td>{{number_format($product->seller_price)}}</td>
                                   <td>
                                     @if($product->prod_status == 'approve')
                                   
-                                        <span  class="text-success"><i class="fa fa-check"></i> </span>
-                                  
+                                        <span  class="text-success">
+                                          <i class="fa fa-check"></i></span>
+                                 
                                     @else
-                                        Pending
-                                    
-                                   
-                                  @endif</td>
-                             <td class="text-danger">
-                                 <form action="/remove_product" method="post" name="submit">
-                            @csrf
-                                 <input type="hidden" name="id"   value="{{$product->id }}">
-
-                                  <input type="hidden" name="prod_status"  value="remove"  >
-
-                                   <button type="submit" name="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                                      @endif
+                                   {{$product->prod_status }}
+                                  </td>
+                             <!-- <td class="text-danger">
+                              <a href="" data-toggle="modal" data-target="#pModal" class="btn btn-outline-danger btn-sm"> 
+                                Remove
+                              </a>
+                                </td> -->
+                                <td>
+                                    @if($product->prod_status == 'pending')
+                                    <form action="/remove_product" method="post" name="submit">
+                                    @csrf
                             
-                                    </form>
-                                </td>
+                                  
+                                   <input type="hidden" name="id"   value="{{$product->id }}">
+
+                                    <input type="hidden" name="prod_status"  value="remove"  >
+                               
+
+                                  <button type="submit" name="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i> Remove</button>
+                                                    
+                        
+                           </form>
+                          @endif
+                        </td>
+                              
+                              
                               
                           </tr> 
                           @endforeach
@@ -179,6 +258,48 @@
         </div>
       </div>
   </div>
+
+
+
+  <!-- remove Modal -->
+
+<div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+         <h5 class="modal-title" id="pModalLabel">Are you sure want to remove this product?</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+       
+        <p></p>
+       
+      </div>
+      <form action="/remove_product" method="post" name="submit">
+            @csrf
+      <div class="modal-body">
+       <div class="row mb-3">
+          
+           <input type="hidden" name="id"   value="">
+
+            <input type="hidden" name="prod_status"  value="remove"  >
+        </div>
+    
+
+      </div>
+      <div class="modal-footer">
+       <button type="submit" name="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i> Yes. Remove</button>
+                            
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">No</button>
+        
+        </div>
+         </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--remove modal end-->
+
   @endsection
   
 

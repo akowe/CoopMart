@@ -31,6 +31,16 @@ class MerchantController extends Controller
     {
    if( Auth::user()->role_name  == 'merchant'){
 
+        // check if user has field his/her profile
+        $user=Auth::user();
+        $address = $user->address;
+        $phone = $user->phone;
+          if($address == '' && $phone =='')
+          {
+             Session::flash('profile', ' You are yet to update your profile! <br> Kindly navigate to profile page.'); 
+                Session::flash('alert-class', 'alert-success'); 
+          }
+          
         $code = Auth::user()->code; //
     
          $id = Auth::user()->id; //
@@ -39,19 +49,31 @@ class MerchantController extends Controller
          //view all products by a merchant / seller
           $products = User::join('products', 'products.seller_id', '=', 'users.id')
                          ->where('products.prod_status', 'pending')
-                         ->orwhere('products.prod_status', 'approve')
-                         ->where('users.id', $id)
+                         ->where('products.prod_status', 'approve')
+                         ->orwhere('users.id', $id)
 
                         ->paginate( $request->get('per_page', 10));
                        //->get(['products.*', 'users.*']);
                         
                          // count products from members
         $count_product = User::join('products', 'products.seller_id', '=', 'users.id')
-                          ->where('products.prod_status', 'pending')
-                         ->orwhere('products.prod_status', 'approve')
+                          // ->where('products.prod_status', 'pending')
+                         ->where('products.prod_status', 'approve')
                           ->where('users.id', $id);
 
-       return view('merchants.merchant', compact('products', 'count_product'));
+                          //count number of order that has been paid
+         $count_orders = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+                          ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                          ->where('orders.status', 'Paid')
+                           ->where('products.seller_id', $id);
+
+          $sales = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+                          ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                          ->where('orders.status', 'Paid')
+                           ->where('products.seller_id', $id);  
+             
+
+       return view('merchants.merchant', compact('products', 'count_product', 'count_orders', 'sales'));
 
        }
     else { return Redirect::to('/login');
@@ -99,87 +121,11 @@ class MerchantController extends Controller
             //this works on local host and linux
            //$path = $request->file('image')->store('/images/resource', ['disk' =>   'my_files']);
            
-           //    $image= $request->file('image');
-           //  if(isset($image))
-           //  {
-           //  $imageName =  rand(1000000000, 9999999999).'.jpeg';
-           //   $image->move(public_path('images'),$imageName);
-           //   $image_path = "/images/" . $imageName; 
-
-           //   }
-
-           //  else {
-           //  $image_path = "";
-           //   }
-
-
-           // $img1= $request->file('img1');
-           //  if(isset($img1))
-           //  {
-           //  $img1Name =  rand(1000000000, 9999999999).'.jpeg';
-           //   $img1->move(public_path('images'),$img1Name);
-           //   $img1_path = "/images/" . $img1Name; 
-
-           //   }
-
-           //  else {
-           //  $img1_path = "";
-           //   }
-
-
-           //    $img2= $request->file('img2');
-           //  if(isset($img2))
-           //  {
-           //  $img2Name = rand(1000000000, 9999999999).'.jpeg';
-           //   $img2->move(public_path('images'),$img2Name);
-           //   $img2_path = "/images/" . $img2Name; 
-
-           //   }
-
-           //  else {
-           //  $img2_path = "";
-           //   }
-
-
-
-           //  $img3= $request->file('img3');
-           //  if(isset($img3))
-           //  {
-           //  $img3Name =  rand(1000000000, 9999999999).'.jpeg';
-           //   $img3->move(public_path('images'),$img3Name);
-           //   $img3_path = "/images/" . $img3Name; 
-
-           //   }
-
-           //  else {
-           //  $img3_path = "";
-           //   }
-
-
-           //  $img4= $request->file('img4');
-           //  if(isset($img4))
-           //  {
-           //  $img4Name = rand(1000000000, 9999999999).'.jpeg';
-           //   $img4->move(public_path('images'),$img4Name);
-           //   $img4_path = "/images/" . $img4Name; 
-
-           //   }
-
-           //  else {
-           //  $img4_path = "";
-           //   }
-
-
-
-            // This works on cpanel. in subdomain
-           
-         // SET OPTIONAL IMAGES
-
-              $image= $request->file('image');
+            $image= $request->file('image');
             if(isset($image))
             {
-            $imageName = rand(1000000000, 9999999999).'.jpeg';
-             $image->move(public_path('coopmart/images'),$imageName);
+            $imageName =  rand(1000000000, 9999999999).'.jpeg';
+             $image->move(public_path('images'),$imageName);
              $image_path = "/images/" . $imageName; 
 
              }
@@ -193,7 +139,7 @@ class MerchantController extends Controller
             if(isset($img1))
             {
             $img1Name =  rand(1000000000, 9999999999).'.jpeg';
-             $img1->move(public_path('coopmart/images'),$img1Name);
+             $img1->move(public_path('images'),$img1Name);
              $img1_path = "/images/" . $img1Name; 
 
              }
@@ -206,8 +152,8 @@ class MerchantController extends Controller
               $img2= $request->file('img2');
             if(isset($img2))
             {
-            $img2Name =  rand(1000000000, 9999999999).'.jpeg';
-             $img2->move(public_path('coopmart/images'),$img2Name);
+            $img2Name = rand(1000000000, 9999999999).'.jpeg';
+             $img2->move(public_path('images'),$img2Name);
              $img2_path = "/images/" . $img2Name; 
 
              }
@@ -222,7 +168,7 @@ class MerchantController extends Controller
             if(isset($img3))
             {
             $img3Name =  rand(1000000000, 9999999999).'.jpeg';
-             $img3->move(public_path('coopmart/images'),$img3Name);
+             $img3->move(public_path('images'),$img3Name);
              $img3_path = "/images/" . $img3Name; 
 
              }
@@ -235,8 +181,8 @@ class MerchantController extends Controller
             $img4= $request->file('img4');
             if(isset($img4))
             {
-            $img4Name =  rand(1000000000, 9999999999).'.jpeg';
-             $img4->move(public_path('coopmart/images'),$img4Name);
+            $img4Name = rand(1000000000, 9999999999).'.jpeg';
+             $img4->move(public_path('images'),$img4Name);
              $img4_path = "/images/" . $img4Name; 
 
              }
@@ -245,14 +191,23 @@ class MerchantController extends Controller
             $img4_path = "";
              }
 
+              //    $img2= $request->file('img2');
+           //  if(isset($img2))
+           //  {
+           //  $img2Name = time().'_'.$img2->getClientOriginalName();
+           //   $img2->move(public_path('coopmart/images'),$img2Name);
+           //   $img2_path = "/images/" . $img2Name; 
+
+           //   }
+
 
             // add company and coperative percentage
 
-            $cop = $request->price * 5 / 100; //cooperative percentage
+            //$cop = $request->price * 5 / 100; //cooperative percentage
 
-            $com = $request->price *  2 / 100;// coopmart percentage
-
-            $price = $request->price + $cop + $com;
+            $company_percentage = $request->price *  7 / 100;// coopmart percentage
+        
+            $price = $request->price  + $company_percentage;
 
            $product = new Product;
            $product->cat_id    = $request->cat_id;
@@ -260,6 +215,7 @@ class MerchantController extends Controller
            $product->quantity   = $request->quantity;
            $product->prod_brand = $request->prod_brand;
            $product->old_price  = $request->old_price;
+           $product->seller_price = $request->price;
            $product->price      = $price;
            $product->description= $request->description;
            $product->image      = $image_path;
@@ -277,7 +233,7 @@ class MerchantController extends Controller
                     'message'   =>   'approve'
                 );
 
-             Mail::to('estherakowe@yahoo.com')->send(new SendMail($data));
+             Mail::to('info@coopmart.ng')->send(new SendMail($data));
 
             
             return redirect('merchant')->with('status', 'New product added successfully');   
@@ -312,6 +268,26 @@ class MerchantController extends Controller
         }
 
         return redirect()->back()->with('success', 'Product Removed Successful!');
+    }
+
+
+    public function sales_preview(Request $request)
+    {
+         if( Auth::user()->role_name  == 'merchant'){
+               $id = Auth::user()->id; //
+
+          $sales = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+                           ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                          ->where('orders.status', 'Paid')
+                           ->where('products.seller_id', $id)   
+                            ->paginate( $request->get('per_page', 5));  
+
+       return view('merchants.sales_preview', compact('sales'));
+
+         }
+         else{
+            return Redirect::to('/login');
+         } 
     }
 
 }//class

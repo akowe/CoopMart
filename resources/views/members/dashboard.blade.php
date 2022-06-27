@@ -15,7 +15,7 @@
             <!-- BreadCrumb -->
             <nav aria-label="breadcrumb" role="navigation">
               <ol class="breadcrumb adminx-page-breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Member</li>
               </ol>
             </nav>
@@ -28,7 +28,14 @@
                 </h5>
                
 
-                <div class="card-body">
+                <div class="card-body text-center">
+
+                   @if (session('profile'))
+                        <div class="alert alert-danger" role="alert">
+                              <a href="{{url('profile') }}" class="cursor"> {!! session('profile') !!}</a>
+                        </div>
+                    @endif
+
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -125,7 +132,7 @@
                              <td>{{$order['fname']}} {{$order['lname']}}</td>
                              <td>{{ number_format($order['total']) }}</td>
                               <td>
-                              <a href="member_invoice/{{ $order->order_id }}" title="Click to view">{{$order['order_number'] }}</a>
+                              <a href="member_invoice/{{ $order->order_number }}" title="Click to view">{{$order['order_number'] }}</a>
                             </td>
                                <td>{{$order['status']}}</td>
                                   <td>
@@ -142,9 +149,10 @@
                                         @else
                                         <form action="/cancel_order" method="post" name="submit">
                                         @csrf
-                                        <input type="hidden" name="order_id"   value="{{$order->order_id }}">
+                                        <input type="hidden" name="order_number"   value="{{$order->order_number }}">
 
-                                        <input type="hidden" name="amount"  value="{{$order->total }}"  >
+                                        <input type="hidden" name="amount"   value="{{$order->total }}">
+
                                         <input type="hidden" name="status"  value="cancel"  >
 
                                         <button type="submit" name="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i></button>

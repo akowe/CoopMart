@@ -114,7 +114,7 @@
                   <!-- count product, order and sales-->
 
              <div class="row">
-              <div class="col-md-6 col-lg-3 d-flex">
+              <div class="col-md-3 col-lg-3 d-flex">
                 <div class="card mb-grid w-100">
                   <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between mb-3">
@@ -134,7 +134,7 @@
                 </div>
               </div>
 
-               <div class="col-md-6 col-lg-3 d-flex">
+               <div class="col-md-3 col-lg-3 d-flex">
                 <div class="card mb-grid w-100">
                   <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between mb-3">
@@ -156,17 +156,17 @@
 
               
 
-              <div class="col-md-6 col-lg-3 d-flex">
+              <div class="col-md-6 col-lg-6 d-flex">
                 <div class="card border-0 bg-primary text-white text-center mb-grid w-100">
                   <div class="d-flex flex-row align-items-center h-100">
                     <div class="card-icon d-flex align-items-center h-100 justify-content-center">
                       <i data-feather="shopping-cart"></i>
                     </div>
                     <a href="{{url('transactions') }}" class="card-body text-white">
-                      <div class="card-info-title">Sales</div>
+                      <div class="card-info-title">Total Payment With Paystack</div>
                       <h3 class="card-title mb-0">
                      
-                        ₦{{ number_format($sales->sum('tran_amount')) }}
+                        ₦{{ number_format($transaction->sum('tran_amount')) }}
                       </h3>
                     </a>
                   </div>
@@ -212,12 +212,13 @@
                         <thead>
                           <tr class="small" >
                             <th>Date</th>
-                            <th>Member</th>
+                           
                               <th>Cooperative</th>
                             <th>Amount</th>
+                         
                             <th>Order Number</th>
                               <th>Status</th>
-                            <th>Make Payment</th>
+                            <th>Payment</th>
                           
                           </tr>
                         </thead>
@@ -225,12 +226,15 @@
                           @foreach($orders as $order)
                           <tr class="small">
                             <td>
-                            {{ date('d/m/y', strtotime($order->created_at))}}</td>
-                             <td>{{$order['fname']}} {{$order['lname']}}</td>
-                             <td>{{$order['coopname'] }}</td>
+                            {{ date('d/M/Y', strtotime($order->created_at))}}</td>
+                            
+                       
+                              <td><a href="{{ url('users_list') }}">{{$order['coopname'] }}</a>
+                              </td>
                              <td>₦{{ number_format($order['total']) }}</td>
+                            
                              <td>
-                              <a href="sales_invoice/{{ $order->order_id }}" title="Click to view">{{$order['order_number'] }}</a>
+                              <a href="sales_invoice/{{ $order->order_number }}" title="Click to view">{{$order['order_number'] }}</a>
                             </td>
                                <td>{{$order['status']}}</td>
                              
@@ -245,6 +249,9 @@
                                 @if( $order->status == 'Paid' )
                                     <span style="display:block;" class="text-success"><i class="fa fa-check"></i> Done</span>
 
+                                    <br>
+                                     <a href="order/{{ $order->order_number }}">Seller Details</a>
+
                                 @endif
 
                                  @if( $order->status == 'confirmed' )
@@ -252,14 +259,14 @@
     
                                     @csrf
                                     <div class="form-group" >
-                                        <input type="hidden" name="order_id" value="{{$order->order_id }}">
+                                        <input type="hidden" name="order_number" value="{{$order->order_number }}">
                                     </div>
 
                                     <input type="submit" name="submit" value="Paid" class="btn btn-outline-primary btn-sm">
 
                                 </form>
-
                               @endif
+
                           </td>
                               
                           </tr>
@@ -273,6 +280,48 @@
                         </div>
                   </div>
                 </div>
+
+
+
+                <br><br>
+
+
+<!-- <table class="table-striped table">
+                        <thead>
+                          <tr class="small">
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Qty. Sold</th>
+                             <th>Seller's Price</th>
+                             <th>Status</th>
+                           
+                          
+                          </tr>
+                        </thead>
+                        <tbody>
+                          
+
+                          @foreach($sales as $product)
+                          
+
+                          <tr class="small">
+                            <td> {{ date('d/m/y', strtotime($product->created_at))}}</td>
+                             <td>{{$product->prod_name }}</td>
+                             <td>{{$product->order_quantity }}</td>
+                             <td>{{$product->seller_price  }}</td>
+                                  <td>
+                                   {{ $product->status}}</td>
+                            
+                              
+                          </tr> 
+                          @endforeach
+
+                        </tbody>
+                    </table>
+                     <div class="store-filter clearfix">
+                          {{$sales->links()}}
+                        </div> -->
+
               </div><!-- col-12-->
              
              

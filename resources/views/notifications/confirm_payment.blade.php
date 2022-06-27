@@ -1,6 +1,6 @@
 <p>Hi,  <strong>{{ $data['name'] }}</strong> your payment is confirmed.</p>
 <p>Payment Details: <br>
-<strong>Product:</strong> {{ $data['product'] }}, <br>
+<!-- <strong>Product:</strong> {{ $data['product'] }}, <br> -->
 <strong>Order number:</strong> {{ $data['order_number'] }}<br>
 <strong>Amount:</strong>  {{ number_format($data['amount'])}}<br>
 

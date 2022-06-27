@@ -61,18 +61,21 @@ class OrderController extends Controller
             $totalAmount += $item['price'] * $item['quantity'];
 
             // check if sufficient credit limit
-             $getcredit = \DB::table('vouchers')->where('user_id', $member)->first()->credit;
+           $getcredit = \DB::table('vouchers')->where('user_id', $member)->first()->credit;
+              //$getcredit = \DB::table('vouchers')->where('user_id', $member)->get('credit')->first();
            if($getcredit < $totalAmount){
 
-            return redirect()->route('cart')->with('success', ' You Have Insufficient Credit Limit . Contact Your Cooperative');
+            return redirect()->route('cart')->with('success', 'Your balance is low. Reduce your  items or contact your cooperative admin!');
            }
 
         }
          
 
         $order = new Order();
-        $order->user_id = Auth::user()->id;
-        $order->total = $totalAmount;
+        $order->user_id     = Auth::user()->id;
+        $order->total       = $totalAmount;
+        $order->order_number = $order_number;
+        $order->status      = $order_status;
         $order->save();
 
          $data = [];
@@ -87,13 +90,12 @@ class OrderController extends Controller
             ]
         ];
 
+
         $orderItem = new OrderItem();
              $orderItem->order_id   = $order->id;
              $orderItem->product_id = $item['id'];
              $orderItem->order_quantity   = $item['quantity'];
              $orderItem->amount     = $item['price'];
-             $orderItem->order_number = $order_number;
-             $orderItem->status     = $order_status;
              $orderItem->save();
         }
 

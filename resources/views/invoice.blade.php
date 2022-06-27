@@ -48,7 +48,7 @@
                     <div class="row pb-5 p-4">
                         <div class="col-md-6 small">
                             <p class="font-weight-bold mb-4">Client Information</p>
-                            <p class="mb-1">{{ $item->fname }} {{ $item->lname }}</p>
+                            <p class="mb-1">{{ $item->fname }} {{ $item->lname }} <br>of {{ $item->coopname}}</p>
                             <p class=""><br>House Address:</p>
                             <p class="mb-1">{{ $item->address}}</p>
                             <p class="mb-1">{{ $item->location }}</p>

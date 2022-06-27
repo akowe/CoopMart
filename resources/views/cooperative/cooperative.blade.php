@@ -15,7 +15,7 @@
             <!-- BreadCrumb -->
             <nav aria-label="breadcrumb" role="navigation">
               <ol class="breadcrumb adminx-page-breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Cooperative</li>
               </ol>
             </nav>
@@ -28,7 +28,14 @@
                 </h5>
                  Share it with your members; it's  used in pairing a member to your cooperative.
 
-                <div class="card-body">
+                  <div class="card-body text-center">
+
+                   @if (session('profile'))
+                        <div class="alert alert-danger" role="alert">
+                            <a href="{{url('profile') }}" class="cursor"> {!! session('profile') !!}</a>
+                        </div>
+                    @endif
+                    
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -100,12 +107,12 @@
                     <div class="card-icon d-flex align-items-center h-100 justify-content-center">
                       <i data-feather="users"></i>
                     </div>
-                    <div class="card-body">
+                    <a class="card-body text-white" href="{{url('members') }}">
                       <div class="card-info-title">Members</div>
                       <h3 class="card-title mb-0">
                        {{ $members->count() }}
                       </h3>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -152,32 +159,78 @@
                   </div>
                   <div class="card-body collapse show tabel-resposive" id="card">
                     <h4 class="card-title">All orders placed by members</h4>
-                    <p class="card-text">Confirmed orders become's sales when you make payment</p>
+                    <p class="card-text">Confirmed orders become's sales when you make payment.</p>
+               
+                      <p>
+                        @php 
+                        $tamount = 0
+                        @endphp 
+                        @php $ran = random_int(10000000, 99999999); 
+                        $tamount += $all_orders->sum('total')* 100
+                        @endphp
+                           
+            
+                        <form method="POST" action="{{ route('pay') }}" accept-charset="UTF-8" class="form-horizontal" role="form" >
+          
+                             @csrf
+                              <div class="form-group">
+                                <!--information of the person making the payment-->
+                                <input type="hidden"  name="email" value="{{Auth::user()->email}}" />
+                                <!-- amount to be paid-- which is the total amount of the order placed by a member --->
+                                  <!-- paystack reference -->
+                              <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}">
+            
+                               <input type="hidden" name="metadata" value="{{ json_encode($array = 
+                               [
+                                'user_id' => Auth::user()->id,
+                                'order_id'=>$all_orders_id->pluck('id'),
+                                ]
+                                ) }}" > <!-- {{-- For other necessary things you want to add to your payload. it is optional though --}}
+                              -->
+                             <input type="hidden" name="order_id" value="{{ $all_orders_id->pluck('id') }}">
+                              
+                                <input type="hidden" name="amount" value="{{$tamount}}" />
+                             
+                              </div>
+
+                              <div class="form-submit">
+                                 Total Amount.
+                                  <span class="" style="font-weight:700;">&nbsp;₦{{number_format($all_orders->sum('total'))}}&nbsp; &nbsp; 
+
+                                  <!--   {{collect($all_orders_id)}}  {{$all_orders_id->pluck('id')}} -->
+
+                                  </span>
+                                <button type="submit" name="submit" value="Pay Now!" class="btn btn-outline-danger btn-sm"> Pay All Confirmed Order ! </button>
+                              </div>
+
+                            </form>
+                          </p>
                     
                     <table class="table-striped table">
                         <thead>
                           <tr class="small">
                             <th>Date</th>
                             <th>Member</th>
+                            <th>Cooperative</th>
                             <th>Amount</th>
                             <th>Order Number</th>
                               <th>Status</th>
-                            <th>Make Payment</th>
+                           <th></th>
                           
                           </tr>
                         </thead>
                         <tbody>
-                           
-
                           @foreach($orders as $order)
                         
                           <tr class="small">
                             <td>
                             {{ date('d/m/y', strtotime($order->created_at))}}</td>
                              <td>{{$order['fname']}} {{$order['lname']}}</td>
+                             
+                             <td>{{$order['coopname']}}</td>
                              <td id="amount">{{ number_format($order['total']) }}</td>
                              <td>
-                              <a href="invoice/{{ $order->order_id }}" title="Click to view">{{$order['order_number'] }}</a>
+                              <a href="invoice/{{ $order->order_number }}" title="Click to view">{{$order['order_number'] }}</a>
                             </td>
                                <td>{{$order['status']}}</td>
                              
@@ -190,78 +243,12 @@
                                   @endphp
 
                                 @if( $order->status == 'Paid' )
-
-                              <form method="POST" action="{{ route('pay') }}" accept-charset="UTF-8" class="form-horizontal" role="form" style="display:none;">
-    
-                             @csrf
-                              <div class="form-group">
-                                <!--information of the person making the payment-->
-                                <input type="hidden"  name="email" value="{{Auth::user()->email}}" />
-                                <!-- amount to be paid-- which is the total amount of the order placed by a member --->
-                                  <!-- paystack reference -->
-                              <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}">
-            
-                               <input type="hidden" name="metadata" value="{{ json_encode($array = 
-                               [
-                               'member_id' => $order->user_id,
-                                'order_id' => $order->order_id,
-                                'user_id' => Auth::user()->id,
-                                ]
-                                ) }}" > <!-- {{-- For other necessary things you want to add to your payload. it is optional though --}}
-                              -->
-                                <!-- this is to get the order details from order table  using order_id-->
-                              <input type="hidden" name="order_id" value="{{ $order['order_id'] }}">
-
-                              <!-- this is the  id of a member that place the order. used to get the member details -->
-                                <input type="hidden" name="customer_code" value="{{$order['user_id']}}"  />
-                              
-                                <input type="hidden" name="amount" value="{{ $pamount }}" />
-                             
-                              </div>
-
-                              <div class="form-submit">
-                                <button type="submit" name="submit" value="Pay Now!" class="btn btn-outline-primary btn-sm"> Pay Now! </button>
-                              </div>
-
-                            </form>
-                            <span style="display:block;" class="text-success"><i class="fa fa-check"></i> Done</span>
+                                <span style="display:block;" class="text-success"><i class="fa fa-check"></i> </span>
 
                                 @endif
 
                                  @if( $order->status == 'confirmed' )
-                                  <form method="POST" action="{{ route('pay') }}" accept-charset="UTF-8" class="form-horizontal" role="form" style="display:block;">
-    
-                             @csrf
-                              <div class="form-group">
-                                <!--information of the person making the payment-->
-                                <input type="hidden"  name="email" value="{{Auth::user()->email}}" />
-                                <!-- amount to be paid-- which is the total amount of the order placed by a member --->
-                                  <!-- paystack reference -->
-                              <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}">
-            
-                               <input type="hidden" name="metadata" value="{{ json_encode($array = 
-                               [
-                               'member_id' => $order->user_id,
-                                'order_id' => $order->order_id,
-                                'user_id' => Auth::user()->id,
-                                ]
-                                ) }}" > <!-- {{-- For other necessary things you want to add to your payload. it is optional though --}}
-                              -->
-                                <!-- this is to get the order details from order table  using order_id-->
-                              <input type="hidden" name="order_id" value="{{ $order['order_id'] }}">
-
-                              <!-- this is the  id of a member that place the order. used to get the member details -->
-                                <input type="hidden" name="customer_code" value="{{$order['user_id']}}"  />
                               
-                                <input type="hidden" name="amount" value="{{ $pamount }}" />
-                             
-                              </div>
-
-                              <div class="form-submit">
-                                <button type="submit" name="submit" value="Pay Now!" class="btn btn-outline-primary btn-sm"> Pay Now! </button>
-                              </div>
-
-                            </form>
 
                               @endif
                           </td>
@@ -276,11 +263,14 @@
                     </table>
                      <div class="store-filter clearfix">
                           {{$orders->links()}}
+
+                          
                         </div>
                   </div>
                 </div>
               </div><!-- col-12-->
                <div class="col-lg-4">
+
                 <div class="card">
                   <div class="card-header">
                   Credit Limit
@@ -292,7 +282,7 @@
                    
                    
                   </div>
-                </div>
+                </div><!--card-->
               </div>
              
             </div>

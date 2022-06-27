@@ -21,7 +21,9 @@ class CreateProductsTable extends Migration
             $table->string('prod_brand')->nullable();
             $table->text("description")->nullable();
             $table->decimal("old_price")->nullable();
+            $table->decimal("seller_price");
             $table->decimal("price");
+
             $table->string("image");
             $table->string("img1")->nullable();
             $table->string("img2")->nullable();

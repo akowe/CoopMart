@@ -15,6 +15,7 @@ use App\Models\ShippingDetail;
 use App\Models\Transaction;
 use App\Mail\PaymentEmail;
 use App\Mail\ConfirmPaymentEmail;
+use App\Mail\SalesEmail;
 
 
 use Auth;
@@ -81,8 +82,8 @@ class PaymentController extends Controller
          $user_id = implode(" ",$user);
 
          $order = Arr::pluck($metaData, 'order_id'); // id of the particular order
-         $order_id = implode(" ",$order);
-           
+         $order_id = json_encode($order, true);
+      
 
          $authorization = array_column($paymentDetails, 'authorization');  
 
@@ -90,13 +91,28 @@ class PaymentController extends Controller
          $get_authCode = implode(" ",$authorization_code);
 
          //print_r($get_amount);
-        if($get_status = 'success'){
+        // if($get_status = 'success'){
+
+        //    // insert to transaction table
+        //      $orderItem = new Transaction();
+        //      $orderItem->member_id          = $member_id;
+        //      $orderItem->user_id            = $user_id;
+        //      $orderItem->order_id           = $order_id;
+        //      $orderItem->authorization_code = $get_authCode;
+        //      $orderItem->paystack_ref       = $get_ref;
+        //      $orderItem->tran_amount        =  $get_amount;
+        //      $orderItem->pay_status         =  $get_status;
+        //      $orderItem->save();
+            
+        // }
+
+ if($get_status = 'success'){
 
            // insert to transaction table
              $orderItem = new Transaction();
-             $orderItem->member_id          = $member_id;
+           
              $orderItem->user_id            = $user_id;
-             $orderItem->order_id           = $order_id;
+           
              $orderItem->authorization_code = $get_authCode;
              $orderItem->paystack_ref       = $get_ref;
              $orderItem->tran_amount        =  $get_amount;
@@ -104,12 +120,15 @@ class PaymentController extends Controller
              $orderItem->save();
             
         }
+
         if($orderItem){
 
         //update order status to Paid in orderItem table with new credit balance
-            OrderItem::where('order_id', $order_id)
+            Order::where('status', 'confirmed' )
                     ->update([
-                    'status' => 'Paid'
+                    'status' => 'Paid',
+                    'pay_status'=>'success',
+                    'pay_type'=>'Paystack'
                 ]);
 
 // reduce product qunatity if paymemt is successful
@@ -121,7 +140,25 @@ class PaymentController extends Controller
                          if($stock > $order->order_quantity){
                              \DB::table('products')->where('id', $order->product_id)->decrement('quantity',$order->order_quantity);
                             }
+
+                 //get  seller details to send email notification
+                 
+                 // $seller = User::join  ('products', 'products.seller_id', '=', 'users.id') 
+                 //            ->leftjoin('order_items', 'order_items.product_id', '=', $order->product_id)
+
+                 //            ->get('users.email');    
+
+
+                 //           $seller2 = Product::join('order_items', 'order_items.product_id', '=', $order->product_id) 
+                 //            ->leftjoin('users', 'users.id', '=', )
+
+                 //            ->get('users.email');          
+
+                              
+
                         }//reduce product qty
+
+
     
     //get details of coperative
 $user_details = \DB::table('users')->where('id', $user_id)->get('*');
@@ -195,6 +232,11 @@ $seller_fname = Arr::pluck($seller_details, 'fname');
              //send  payment confirmation email to the cooperative
 
              Mail::to($get_email)->send(new ConfirmPaymentEmail($data));
+
+
+             //send  sales email to seller
+
+            // Mail::to($seller)->send(new SalesEmail($data));
        
         return redirect()->route('cooperative');
 

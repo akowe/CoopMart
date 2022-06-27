@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use\App\Models\OrderItem;
 
 class Order extends Model
 {
@@ -18,5 +19,8 @@ class Order extends Model
     //     'note', 'status'
     // ];
 
-
+public function OrderItem()
+{
+    return $this->belongsTo(OrderItem::class, 'order_id'); 
+}
 }//class

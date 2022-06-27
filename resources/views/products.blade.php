@@ -3,11 +3,14 @@
 
        @section('content')
         <!-- SECTION -->
-
-        <!-- HOT DEAL SECTION -->
-        <div id="hot-deal" class="section">
-            <!-- container -->
-            <div class="container">
+        <span class="text-center">
+               @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {!! session('status') !!}
+                            
+                        </div>
+                    @endif
+                    
                 @if(Session::has('register')== true)
                                         <!--New registration alert-->
                                         <p class="alert {{ Session::get('alert-class', 'alert-info') }} text-center">{{ Session::get('register') }}</p>
@@ -18,13 +21,28 @@
                     <p style="display: none;">{{ Session::get('register') }}</p>
                  @endif
 
+                @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif   
+        </span>
+
+        <!-- HOT DEAL SECTION -->
+        <div id="hot-deal" class="section">
+            <!-- container -->
+            <div class="container">
                 <!-- row -->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="hot-deal">
                             
-                            <h2 class="text-uppercase">hot deal this week</h2>
-                            <p>New Collection Up to 10% OFF</p>
+                            <h2 class="text-uppercase">Online Marketplace</h2>
+                            <p>For Cooperatives</p>
                             <a class="primary-btn cta-btn" href="#">Shop now</a>
                         </div>
                     </div>
@@ -58,9 +76,9 @@
                        
                                 <div class="product ">
                                   @if($product->quantity < 1)
-                                  <div >
-                                            <a href="" class="product-img">
-                                                <img src="{{ asset($product->image) }}" class="cursor">
+                                  <div class="text-center" >
+                                            <a href="" class="product-img text-center">
+                                                <img src="{{ asset($product->image) }}" class="cursor text-center">
                                                   <div class="top-right">Sold Out !</div>
                                             </a>
                                             </div>
@@ -68,7 +86,7 @@
 
                                             <div class="product-body">
                                                 <p class="product-category">{{ $product->prod_brand }}</p>
-                                                <h3 class="product-name"><a href="#">{{ $product->prod_name }}</a></h3>
+                                                <h6 class="product-name"><a href="#">{{ $product->prod_name }}</a></h6>
                                                 <del class="product-price "> ₦{{ number_format($product->price )}}
                                                    </del>
                                                     

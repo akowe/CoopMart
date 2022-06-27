@@ -31,6 +31,16 @@
                         </div>
                     @endif
 
+                     @if(Session::has('remove')== true)
+                                        <!--show alert-->
+                                        <p class="alert {{ Session::get('alert-class', 'alert-info') }} text-center">{{ Session::get('remove') }}</p>
+                                        @endif
+
+                @if(Session::has('remove')== false)
+                                        <!--show alert-->
+                    <p style="display: none;">{{ Session::get('remove') }}</p>
+                 @endif
+
                     <div class="row">
               <div class="col-lg-12">
                 <div class="card">
@@ -59,7 +69,9 @@
                   </div>
                   <div class="card-body collapse show tabel-resposive" id="card">
                     <h4 class="card-title"></h4>
-                    <p class="card-text">Only "approved" products will be visible on CoopMart landing page.</p>
+                    <p class="card-text">Only "Approved" products will be visible on CoopMart landing page.</p>
+
+                      <p class="card-text text-danger">Click "Remove" if you want to stop products from being visible   on CoopMart landing page.</p>
                     <table class="table-striped table">
                         <thead>
                           <tr class="small" >
@@ -67,6 +79,7 @@
                             <th>Seller</th>
                               <th>Product</th>
                               <th>Quantity</th>
+                              <th>Seller's Price</th>
                               <th>Price</th>
                              <th>Images</th>
                             <th>Status</th>
@@ -83,6 +96,7 @@
                          
                              <td>{{$product['prod_name']}}</td>
                              <td>{{$product['quantity'] }}</td>
+                               <td>₦{{number_format($product['seller_price']) }}</td>
                               <td>₦{{number_format($product['price']) }}</td>
                                <td>
                                <img src="{{asset( $product['image'] )}}" width="45" height="45">
@@ -117,6 +131,25 @@
                                 @endif
 
                           </td>
+                       <!--     <td class="text-danger">
+                              <a href="" data-toggle="modal" data-target="#pModal" class="btn btn-outline-danger btn-sm"> 
+                                Remove
+                              </a>
+                                </td> -->
+                                 <td>   
+                                    <form action="/remove_product" method="post" name="submit">
+                                    @csrf
+                            
+                                  
+                                   <input type="hidden" name="id"   value="{{$product->id }}">
+
+                                    <input type="hidden" name="prod_status"  value="remove"  >
+                               
+
+                                  <button type="submit" name="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i> Remove</button>
+                                                    
+                        
+                           </form></td>
                               
                           </tr>
                           @endforeach
@@ -141,4 +174,42 @@
     </div>
 </div>
 </div>
+
+  <!-- remove Modal -->
+<div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="pModalLabel">Are you sure want to remove this product?</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      
+        <p></p>
+       
+      </div>
+      <form action="/remove_product" method="post" name="submit">
+            @csrf
+      <div class="modal-body">
+       <div class="row mb-3">
+          
+           <input type="text" name="id"   value="">
+
+            <input type="hidden" name="prod_status"  value="remove"  >
+        </div>
+    
+
+      </div>
+      <div class="modal-footer">
+       <button type="submit" name="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i> Yes. Remove</button>
+                            
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">No</button>
+        
+        </div>
+         </form>
+      </div>
+    </div>
+  </div>
+</div><!--remove modal end-->
+
 @endsection

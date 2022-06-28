@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Voucher;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ShippingDetail;
 use App\Models\Transaction;
 use App\Mail\PaymentEmail;
@@ -132,28 +133,19 @@ class PaymentController extends Controller
                 ]);
 
 // reduce product qunatity if paymemt is successful
-                $newOrders = \DB::table('order_items')->get();
+                //$newOrders = \DB::table('order_items')->get();
+
+                  $newOrders  = OrderItem::join  ('orders', 'orders.id', '=', 'order_items.order_id') 
+                            ->where('orders.status', 'Paid');  
+
                     
                     foreach ($newOrders as $order){
                      $stock = \DB::table('products')->where('id', $order->product_id)->first()->quantity;
                      
                          if($stock > $order->order_quantity){
                              \DB::table('products')->where('id', $order->product_id)->decrement('quantity',$order->order_quantity);
+                           
                             }
-
-                 //get  seller details to send email notification
-                 
-                 // $seller = User::join  ('products', 'products.seller_id', '=', 'users.id') 
-                 //            ->leftjoin('order_items', 'order_items.product_id', '=', $order->product_id)
-
-                 //            ->get('users.email');    
-
-
-                 //           $seller2 = Product::join('order_items', 'order_items.product_id', '=', $order->product_id) 
-                 //            ->leftjoin('users', 'users.id', '=', )
-
-                 //            ->get('users.email');          
-
                               
 
                         }//reduce product qty
@@ -182,37 +174,19 @@ $order_quantity = Arr::pluck($order_details, 'order_quantity');
         $get_order_quantity = implode(" ",$order_quantity);
 
 
+          
 
-$product_details = \DB::table('products')->where('id', $order->product_id)->get('*');
+                $seller2 = Product::join('users', 'users.id', '=', 'products.seller_id') 
+                            ->leftJoin('order_Items', 'order_Items.seller_id', '=', 'users.id' )
+                            ->leftJoin('orders', 'orders.id', '=', 'order_items.order_id')
+                            ->where('orders.status', 'Paid')
+                            ->get('users.email');   
 
-$prod_name = Arr::pluck($product_details, 'prod_name');
-        $get_prod_name = implode(" ",$prod_name);
-
-
-$seller_id = Arr::pluck($product_details, 'seller_id');
-        $get_seller_id = implode(" ",$seller_id);
-
-
-// get the seller/ merchant info.
-$seller_details = \DB::table('users')->where('id', $get_seller_id)->get('*'); 
-
-$seller_fname = Arr::pluck($seller_details, 'fname');
-        $get_seller_fname = implode(" ",$seller_fname);
-
- $seller_lname = Arr::pluck($seller_details, 'lname');
-        $get_seller_lname = implode(" ",$seller_lname);
-
- $seller_email = Arr::pluck($seller_details, 'email');
-        $get_seller_email = implode(" ",$seller_email);
-
- $seller_phone = Arr::pluck($seller_details, 'phone');
-        $get_seller_phone = implode(" ",$seller_phone);              
-       
-
-//dd($get_prod_name);
+                  
+ 
 
 
-                }//orderitem
+        }//orderitem
 
          Session::flash('payment', ' Your payment was successfull!'); 
             Session::flash('alert-class', 'alert-success'); 
@@ -222,8 +196,8 @@ $seller_fname = Arr::pluck($seller_details, 'fname');
                    $data = array(
                     'name'          =>  $get_name,
                     'order_number'   =>  $get_order_number,  
-                     'amount'       =>  $get_amount,  
-                     'product'      =>  $get_prod_name 
+                     'amount'       =>  $get_amount,
+                    
                     
                 );
 
@@ -236,7 +210,7 @@ $seller_fname = Arr::pluck($seller_details, 'fname');
 
              //send  sales email to seller
 
-            // Mail::to($seller)->send(new SalesEmail($data));
+           Mail::to($seller2)->send(new SalesEmail($data));
        
         return redirect()->route('cooperative');
 

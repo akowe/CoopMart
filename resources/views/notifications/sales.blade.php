@@ -1,8 +1,4 @@
 <p>Hi, you have new sales from CoopMart</p>
-<p>Sales Details: <br>
-<strong>Product Name:</strong> {{ $data['product'] }}<br>
 
-<!-- <strong>Product:</strong> {{ $data['product'] }}, <br> -->
-</p>
-<p ><span class="btn btn-danger">Login <a href="{{ route('merchant') }}">here</a> to see more.</span></p>
+<p ><span class="btn btn-danger"><a href="{{ route('merchant') }}">Login Here</a> to see product details more.</span></p>
 

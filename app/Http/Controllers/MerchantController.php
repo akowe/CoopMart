@@ -279,7 +279,8 @@ class MerchantController extends Controller
           $sales = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
                            ->join('orders', 'orders.id', '=', 'order_items.order_id')
                           ->where('orders.status', 'Paid')
-                           ->where('products.seller_id', $id)   
+                           ->where('products.seller_id', $id) 
+                           ->orderBy('date', 'desc')  
                             ->paginate( $request->get('per_page', 5));  
 
        return view('merchants.sales_preview', compact('sales'));

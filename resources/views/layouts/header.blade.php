@@ -279,9 +279,9 @@ font-size: 14px;
                     <div class="row">
                         <!-- LOGO -->
                         <div class="col-md-3">
-                            <div class="header-logo">
+                            <div class="header-logo" >
                                 <a href="{{ url('/') }}" class="logo">
-                                    <img src="./images/logo-1.png" alt="" width="169" height="70" alt="Coopmart" title="CoopMart">
+                                    <img src="./images/logo-1.png" alt="" width="169" height="60" alt="Coopmart" title="CoopMart">
                                    <!--  <h1 class="white" style="color:#fff;">CoopMart</h1> -->
                                 </a>
                             </div>

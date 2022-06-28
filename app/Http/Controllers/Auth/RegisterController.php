@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Arr;
 
 use App\Models\Voucher;
 use Session;
@@ -63,10 +64,9 @@ class RegisterController extends Controller
             'lname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'role' => ['string'],
+          
             'role_name' => ['string'],
             'code' => ['string'],
-            'coopname' => ['string'],
         ]);
     }
 
@@ -78,13 +78,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $coop = \DB::table('users')->where('code',  $data['code'])->get('coopname');
+         $get_coop = Arr::pluck($coop, 'coopname'); // 
+           $coopname = implode(" ",$get_coop);
+
+           $role = '4';
+           $role_name = 'member';
+
             $user = User::create([
-            'role' => $data['role'],
-            'role_name' => $data['role_name'],
+            'role' => $role,
+            'role_name' => $role_name,
             'fname' => $data['fname'],
             'lname' => $data['lname'],
             'code' => $data['code'],
-            'coopname' => $data['coopname'],
+            'coopname'=> $coopname,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);

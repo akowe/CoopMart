@@ -7,11 +7,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SalesEmail extends Mailable
+class OrderEmail extends Mailable
 {
-  use Queueable, SerializesModels;
-     public $data;
-    /**
+    use Queueable, SerializesModels;
+    public $data;
+
     /**
      * Create a new message instance.
      *
@@ -23,7 +23,6 @@ class SalesEmail extends Mailable
         $this->data = $data;
     }
 
-
     /**
      * Build the message.
      *
@@ -31,6 +30,6 @@ class SalesEmail extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@coopmart.com', 'CoopMart')->subject('New Sales Notification')->view('notifications.sales')->with('data', $this->data);
+         return $this->from('noreply@coopmart.com', 'CoopMart')->subject('New Order Notification')->view('notifications.order')->with('data', $this->data);
     }
 }

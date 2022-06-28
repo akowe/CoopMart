@@ -63,7 +63,9 @@ class CategoriesController extends Controller
                 "prod_name" => $product->prod_name,
                 "quantity" => 1,
                 "price" => $product->price,
-                "image" => $product->image
+                "image" => $product->image,
+                "id" => $product->id,
+                "seller_id" => $product->seller_id
             ];
         }
           

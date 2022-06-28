@@ -183,6 +183,7 @@
 										<h6 class="product-name"><a href="#">{{ $product->prod_name }}</a></h6>
 										<h4 class="product-price">₦{{ number_format($product->price )}} <del class="product-old-price">₦{{number_format($product->old_price)  }}</del></h4>
 										
+										   <i style="display: none;">{{$product->seller_id }}</i>
 										<div class="product-btns">
 										
 										

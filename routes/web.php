@@ -18,6 +18,9 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\NewsletterController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
+use App\Http\Controllers\Auth\CoopController;
+use App\Http\Controllers\Auth\SellerController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -149,6 +152,9 @@ Route::post('newsletter', [App\Http\Controllers\NewsletterController::class, 'st
 
 Route::get('subscribers', [App\Http\Controllers\NewsletterController::class, 'subscribers'])->name('subscribers');
 
+Route::post('coop_insert', [App\Http\Controllers\Auth\CoopController::class, 'coop_insert'])->name('coop_insert');
+
+Route::post('seller_insert', [App\Http\Controllers\Auth\SellerController::class, 'seller_insert'])->name('seller_insert');
 // Route::get('/foo', function () {
 //     Artisan::call('storage:link');
 // });

@@ -173,7 +173,7 @@
       <div class="modal-body">
         
         <p>
- <form method="POST" action="{{ route('register') }}">
+ <form method="POST" action="{{ route('seller_insert') }}">
                         @csrf
 
                           <div class="row mb-3">
@@ -183,8 +183,7 @@
                             $coopID = rand(100,999);
                             @endphp
                                 <input  type="hidden"  name="code" value="Coopmart{{ $coopID }}">
-                                <input type="hidden"  name="role" value="3">
-                              <input type="hidden"  name="role_name" value="merchant">
+                             
                                @php
                             $rand = rand(100000000,999999999);
                             @endphp
@@ -406,25 +405,7 @@
  <form method="POST" action="{{ route('register') }}">
                         @csrf
 
-                          <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">Cooperative Name</label>
-
-                          <div class="col-md-6 form-group">
-
-                           <input type="hidden"  name="role" value="4">
-                              <input type="hidden"  name="role_name" value="member">
-                               @php
-                            $rand = rand(100000000,999999999);
-                            @endphp
-                            <input type="hidden" name="voucher" value="C{{ $rand }}">
-
-                            <input  type="text"name="coopname" required class="form-control" >
-
-                           
-                            </div>
-                        </div>
-
-                          <div class="row mb-3">
+                         <div class="row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-end">Cooperative Code</label>
 
                           <div class="col-md-6 form-group">
@@ -434,6 +415,21 @@
                            
                             </div>
                         </div>
+
+
+                          <div class="row mb-3">
+
+                          <div class="col-md-6 form-group">
+                               @php
+                            $rand = rand(100000000,999999999);
+                            @endphp
+                            <input type="hidden" name="voucher" value="C{{ $rand }}">
+
+                        
+                            </div>
+                        </div>
+
+                         
 
 
                         <div class="row mb-3">
@@ -533,7 +529,7 @@
       <div class="modal-body">
         
         <p>
- <form method="POST" action="{{ route('register') }}">
+ <form method="POST" action="{{ route('coop_insert') }}">
                         @csrf
 
                           <div class="row mb-3">
@@ -543,8 +539,7 @@
                             $coopID = rand(100,999);
                             @endphp
                                 <input  type="hidden"  name="code" value="Coopmart{{ $coopID }}">
-                                <input type="hidden"  name="role" value="2">
-                              <input type="hidden"  name="role_name" value="cooperative">
+                               
                                @php
                             $rand = rand(100000000,999999999);
                             @endphp

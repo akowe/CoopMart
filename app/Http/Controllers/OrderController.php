@@ -13,6 +13,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ShippingDetail;
 use App\Mail\ConfirmOrderEmail;
+use App\Mail\OrderEmail;
+use App\Mail\SalesEmail;
 
 
 
@@ -86,6 +88,7 @@ class OrderController extends Controller
                     'prod_name' => $item['prod_name'],
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
+                    'seller_id'=> $item['seller_id'],
                     
             ]
         ];
@@ -94,6 +97,7 @@ class OrderController extends Controller
         $orderItem = new OrderItem();
              $orderItem->order_id   = $order->id;
              $orderItem->product_id = $item['id'];
+             $orderItem->seller_id = $item['seller_id'];
              $orderItem->order_quantity   = $item['quantity'];
              $orderItem->amount     = $item['price'];
              $orderItem->save();
@@ -147,7 +151,7 @@ class OrderController extends Controller
 
 
            
-         // send email notification to admin
+         // send email notification to member
             $data = array(
             'name'         => $get_name,
             'order_number' => $order_number,  
@@ -155,7 +159,22 @@ class OrderController extends Controller
                 );
 
              Mail::to($get_email)->send(new ConfirmOrderEmail($data));   
+            Mail::to('esther.akowe@livestock247.com')->send(new OrderEmail($data));   
             
+
+
+           //   $seller_email =  \DB::table('users')->where('id', $orderItem->seller_id)
+           //                      ->get('email') ; 
+           //  $semail = Arr::pluck($seller_email, 'email'); // 
+           // $get_semail = implode(" ",$semail);
+
+             
+             // send email notification to seller
+            // $data = array(
+            // 'name'         => $get_name,     
+            //     );
+
+            //     Mail::to($seller2)->send(new SalesEmail($data));               
 
     return redirect()->route('cart')->with('success', 'Your Order was successfull');
       

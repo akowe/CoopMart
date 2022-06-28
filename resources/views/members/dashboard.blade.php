@@ -139,14 +139,14 @@
                                     @if($order->status == 'Paid')
                                     <span  class="text-success"><i class="fa fa-check"></i>Done</span>
                                     @else
-                                      contact your cooperative admin
-                                    
                                    @endif
+                                     @if($order->status == 'confirmed')
+                                    contact your cooperative admin
                                </td>
                              <td class="text-danger">
-                                 @if($order->status == 'Paid')
-                             
-                                        @else
+                               
+                                  
+                                       
                                         <form action="/cancel_order" method="post" name="submit">
                                         @csrf
                                         <input type="hidden" name="order_number"   value="{{$order->order_number }}">

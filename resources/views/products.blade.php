@@ -43,7 +43,7 @@
                             
                             <h2 class="text-uppercase">Online Marketplace</h2>
                             <p>For Cooperatives</p>
-                            <a class="primary-btn cta-btn" href="#">Shop now</a>
+                            <a class="primary-btn cta-btn" href="{{route('category')}}?category=Home%20&%20Kitchen%20Appliances">Shop now</a>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
 
                                             <div class="product-body">
                                                 <p class="product-category">{{ $product->prod_brand }}</p>
-                                                <h6 class="product-name"><a href="#">{{ $product->prod_name }}</a></h6>
+                                                <h6 class="product-name"><a href="#">{{ $product->prod_name }}  </a></h6>
                                                 <del class="product-price "> ₦{{ number_format($product->price )}}
                                                    </del>
                                                     
@@ -117,6 +117,7 @@
                                                 <h4 class="product-price"> ₦{{ number_format($product->price )}}
                                                     <del class="product-old-price">{{number_format($product->old_price)  }}</del></h4>
                                                     
+                                                    <i style="display: none;">{{$product->seller_id }}</i>
 
                                                 <div class="product-btns">
                                                   

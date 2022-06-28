@@ -119,7 +119,8 @@ class ProductController extends Controller
                 "quantity" => 1,
                 "price" => $product->price,
                 "image" => $product->image,
-                "id" => $product->id
+                "id" => $product->id,
+                "seller_id" => $product->seller_id,
 
             ];
         }
@@ -166,6 +167,7 @@ class ProductController extends Controller
           $cart = session()->get('cart');
           $cart[$request->id]["quantity"] = $request->quantity;
           $cart[$request->id]["price"] = $request->price;
+           $cart[$request->id]["seller_id"] = $request->seller_id;
 
           $totalAmount = 0;
 
